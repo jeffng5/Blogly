@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, flash, session
 #from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Person
+from models import db, connect_db, User
 from sqlalchemy import create_engine
 
 
@@ -35,6 +35,8 @@ def add_user():
 @app.route('/<int:id>')
 def create_user(id):
     name= User.query.get_or_404(id)
+    User.query.filter(User.id==id).delete()
+    db.session.commit()
     return render_template('details.html', name=name)  
 
 @app.route('/<int:id>', methods=['POST'])

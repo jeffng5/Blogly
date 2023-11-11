@@ -1,0 +1,17 @@
+<h1>User Edit Page</h1>
+<h3>Click on User you wish to edit</h3>
+
+<ul>
+    {% for name in stuff %} 
+    <li>
+    <a href= '/{{name.id}}'> {{name.first_name}} {{name.last_name}}</a>
+    
+    {%endfor%}
+
+
+</ul>
+ 
+
+
+
+<a href = '/'>Go Back</a>

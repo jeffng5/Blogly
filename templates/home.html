@@ -1,0 +1,33 @@
+<h1>All Users</h1>
+<ul>
+{% for name in stuff %} 
+<li>
+<a href= '/{{name.id}}'> {{name.first_name}} {{name.last_name}}</a>
+
+{%endfor%}
+</li>
+</ul>
+<h1>Create a user</h1>
+
+
+<form action='/' method="POST">
+    <input type='text' name = 'first_name' placeholder='first name'>
+    <input type='text' name = 'last_name' placeholder='last name'>
+    <input type='file' name= 'image_url' placeholder='image_url'>
+
+    <button>Create User</button>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+

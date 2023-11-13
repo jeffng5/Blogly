@@ -21,5 +21,21 @@ class User(db.Model):
     image_url = db.Column(db.String(50))
 
 
+class Blog(db.Model):
 
+    __tablename__= 'blogs'
 
+    id = db.Column(db.Integer,
+                    primary_key=True,
+                    autoincrement= True)
+    title = db.Column(db.Text,
+                    nullable=False)
+    content = db.Column(db.Text,
+                    nullable=False)
+    created_at = db.Column(db.Date,
+                    nullable = True)
+    user_id= db.Column(db.Integer,
+                    db.ForeignKey('users.id'))   
+    
+    join=db.relationship('User', backref='blogs')
+    

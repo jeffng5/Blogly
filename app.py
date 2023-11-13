@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, flash, session
 #from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Blog
 from sqlalchemy import create_engine
 
 
@@ -15,10 +15,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
-@app.route('/')
-def home_page():
-    stuff= User.query.all()
-    return render_template('home.html', stuff=stuff)
+
 
 @app.route('/', methods=['POST'])
 def add_user():
@@ -30,20 +27,29 @@ def add_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return redirect(f'/{new_user.id}')
+    return redirect(f'/')
 
-@app.route('/<int:id>')
-def create_user(id):
-    name= User.query.get_or_404(id)
-    User.query.filter(User.id==id).delete()
-    db.session.commit()
-    return render_template('details.html', name=name)  
+@app.route('/')
+def home_page():
+    stuff= User.query.all()
+    return render_template('home.html', stuff=stuff)
+
 
 @app.route('/<int:id>', methods=['POST'])
-def delete_member(id):
+def create_user(id):
+    name= User.query.get_or_404(id)
     User.query.filter(User.id == id).delete()
     db.session.commit()
-    return render_template('edit.html')
+    return render_template('edit.html', name=name)  
+
+@app.route('/<int:id>')
+def delete_member(id):
+    stuff=User.query.get_or_404(id)
+    # User.query.filter(User.id == id).delete()
+    db.session.commit()
+    all_blogs=Blog.query.filter(Blog.user_id==id)
+
+    return render_template('details.html', name=stuff, all_blogs=all_blogs)
 
 
 
@@ -77,8 +83,30 @@ def delete_user():
     db.session.commit()
 
     all_subjects=User.query.all()
-    
+
     
     return render_template('edit.html', stuff=all_subjects)
- 
-    
+
+@app.route('/personal', methods=['GET','POST'])
+def personal():
+    if 'title' in request.form:
+        title=request.form['title']
+    if 'content' in request.form:
+        content=request.form['content']
+    if 'created_at' in request.form:
+        created_at=request.form['created_at']
+    if 'user_id' in request.form:
+        user_id=request.form['user_id']
+    else:
+        all_blogs= 'There is no such thing!'
+    new_blog= Blog(title=title, content=content, created_at=created_at, user_id=user_id)
+    db.session.add(new_blog)
+    db.session.commit()
+    all_blogs=Blog.query.filter(Blog.user_id==user_id)
+    name=User.query.filter(User.id==user_id)
+
+    return render_template('personal.html', all_blogs=all_blogs, name=name)
+
+# @app.route('/blog')
+# def view_blog():
+#     Blog.query.

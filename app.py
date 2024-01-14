@@ -114,29 +114,7 @@ def edit_user(id):
     
     return render_template('user_list.html')
 
-@app.route('/personal', methods=['GET','POST'])
-def personal():
-    if 'title' in request.form:
-        title=request.form['title']
-    if 'content' in request.form:
-        content=request.form['content']
-    if 'created_at' in request.form:
-        created_at=request.form['created_at']
-    if 'user_id' in request.form:
-        user_id=request.form['user_id']
-    else:
-        all_blogs= 'There is no such thing!'
-    new_blog= Blog(title=title, content=content, created_at=created_at, user_id=user_id)
-    db.session.add(new_blog)
-    db.session.commit()
-    all_blogs=Blog.query.filter(Blog.user_id==user_id)
-    name=User.query.filter(User.id==user_id)
 
-    return render_template('personal.html', all_blogs=all_blogs, name=name)
-
-@app.route('users/<int:id>/posts/new')
-def new_post():
-    return render_template('post_form.html')
 
 
 
@@ -173,3 +151,30 @@ def delete_tag():
     Tag.query.filter(Tag.id==id).delete()
     db.session.commit()
     return render_template("tag_list.html")
+
+@app.route('/users/<int:id>/posts/new', methods=['POST'])
+def personal():
+    if 'title' in request.form:
+        title=request.form['title']
+    if 'content' in request.form:
+        content=request.form['content']
+    if 'created_at' in request.form:
+        created_at=request.form['created_at']
+    if 'user_id' in request.form:
+        user_id=request.form['user_id']
+    else:
+        all_blogs= 'There is no such thing!'
+    new_blog= Blog(title=title, content=content, created_at=created_at, user_id=user_id)
+    db.session.add(new_blog)
+    db.session.commit()
+    all_blogs=Blog.query.filter(Blog.user_id==user_id)
+    name=User.query.filter(User.id==user_id)
+
+    return render_template('personal.html', all_blogs=all_blogs, name=name)
+
+@app.route('/users/<int:id>/posts/new')
+def new_post(id):
+    name= User.query.get_or_404(id)
+    
+    
+    return render_template('post_form.html', name=name)

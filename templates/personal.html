@@ -11,6 +11,7 @@
     
     </form>  
 
+<button><a href="users/<int:id>/posts/new">Post a blog</a></button>
 <!-- {%for post in all_blogs%} -->
 
 <!-- <h3>Posts</h3>
@@ -24,11 +25,3 @@
 <button>Delete Blog</button>
 {%endfor%}
 
-<h3>New Post Form</h3>
-<form action='/personal' method='POST'>
-<input type='text' name = 'title' placeholder='title of blog'>
-<input type='text' name = 'content' placeholder='blog content'>
-<input type='text' name = 'created_at' placeholder='created_at'>
-<input type='integer' name= 'user_id' placeholder='user_id'>
-<button>Submit Blog</button>
-</form> -->

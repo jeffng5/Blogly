@@ -5,11 +5,11 @@
 
 
 <h1>Post Form Page</h1>
-
+{{name.first_name}} {{name.last_name}}
 <h3>New Post Form</h3>
-<form action='/users/{{name.id}}/posts/new' method='POST'>
+<form method='POST'>
 <input type='text' name = 'title' placeholder='title of blog'>
-<input type='text' name = 'content' placeholder='blog content'>
+<input class= 'blog-form' type='text' name = 'content' placeholder='blog content'>
 <input type='text' name = 'created_at' placeholder='created_at'>
 <input type='integer' name= 'user_id' placeholder='user_id'>
 <button>Submit Blog</button>

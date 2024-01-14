@@ -4,14 +4,19 @@
     
     <h3>First Name: {{name.first_name}} 
     Last Name: {{name.last_name}}</h3>
+<ul>
+    {%for blog in blogs%}
+    <li>{{blog.title}}
+    {{blog.content}}</li>
+    {%endfor%}
 
-    
+</ul>
     
 <button><a href= "/users/{{id}}/edit" >Edit User</a></button>
     
     </form>  
 
-<button><a href="users/<int:id>/posts/new">Post a blog</a></button>
+<button><a href="/users/{{id}}/posts/new">Post a blog</a></button>
 <!-- {%for post in all_blogs%} -->
 
 <!-- <h3>Posts</h3>

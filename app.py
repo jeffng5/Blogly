@@ -62,16 +62,14 @@ def add_user():
 def get_indv_user(id):
     name= User.query.get_or_404(id)
     tags_available = Tag.query.all()
-    return render_template('personal.html', name=name, tags_available=tags_available, id =id)  
+    blogs= Blog.query.filter(Blog.user_id==id)
+    return render_template('personal.html', name=name, tags_available=tags_available, blogs=blogs, id=id)  
 
 # delete indv users
 @app.route('/users/<int:id>/delete', methods=['POST'])
 def delete_member(id):
-    # stuff=User.query.get_or_404(id)
     User.query.filter(User.id == id).delete()
     db.session.commit()
-    # all_blogs=Blog.query.filter(Blog.user_id==id)
-
     return render_template('user_list.html')
 
 @app.route('/users/<int:id>/edit')
@@ -85,25 +83,6 @@ def edit_user(id):
     user= User.query.get_or_404(id)
     first_name= request.form['first_name']
     last_name= request.form['last_name']
-    # image_url= request.form['image_url']
-    
-    
-    
-    # for ele in all_subjects:
-    #     if ele.first_name == first_name:
-    #         pass
-    #     else:
-    #         User.query.filter(User.first_name==first_name).delete()
-            
-            
-    # for ele in all_subjects:
-    #     if ele.last_name == last_name:
-    #         pass
-    #     else:
-    #         User.query.filter(User.last_name==last_name).delete()
-            
-            
-    
     new_user = User(first_name=first_name, last_name=last_name)
     db.session.add(new_user)
     
@@ -146,35 +125,39 @@ def edit_tag_post():
 def new_tag():
     return render_template("tag_form.html")
 
-@app.route("/tags/:id/delete")
+@app.route("/tags/<int:id>/delete")
 def delete_tag():
     Tag.query.filter(Tag.id==id).delete()
     db.session.commit()
     return render_template("tag_list.html")
 
 @app.route('/users/<int:id>/posts/new', methods=['POST'])
-def personal():
-    if 'title' in request.form:
-        title=request.form['title']
-    if 'content' in request.form:
-        content=request.form['content']
-    if 'created_at' in request.form:
-        created_at=request.form['created_at']
-    if 'user_id' in request.form:
-        user_id=request.form['user_id']
-    else:
-        all_blogs= 'There is no such thing!'
+def personal(id):
+    title=request.form['title']
+    content=request.form['content']
+    created_at=request.form['created_at']
+    user_id=request.form['user_id']
     new_blog= Blog(title=title, content=content, created_at=created_at, user_id=user_id)
     db.session.add(new_blog)
     db.session.commit()
-    all_blogs=Blog.query.filter(Blog.user_id==user_id)
-    name=User.query.filter(User.id==user_id)
+    name= User.query.filter(User.id==id)
+    blogs= Blog.query.filter(Blog.user_id==id)
+    return render_template('personal.html', name=name, blogs=blogs)
 
-    return render_template('personal.html', all_blogs=all_blogs, name=name)
+@app.route('/posts/<int:post_id>')
+def show_post(post_id):
+    
+    blogs=Blog.query.filter(Blog.id==post_id)
+    
+    return render_template('post_detail.html', blogs=blogs)
 
 @app.route('/users/<int:id>/posts/new')
 def new_post(id):
     name= User.query.get_or_404(id)
-    
-    
     return render_template('post_form.html', name=name)
+
+@app.route("/posts/<int:post_id>/delete")
+def delete_post(post_id):
+    Blog.query.filter(Blog.id==post_id).delete()
+    db.session.commit()
+    return render_template("personal.html")

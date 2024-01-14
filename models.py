@@ -18,7 +18,9 @@ class User(db.Model):
                     nullable=False)
     last_name = db.Column(db.String(50),
                     nullable=False)
-    image_url = db.Column(db.String(50))
+    image_url = db.Column(db.String(50), nullable = True)
+
+    user = db.relationship("Blog", cascade='all,delete', backref='users')
 
 
 class Blog(db.Model):

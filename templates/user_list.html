@@ -1,0 +1,12 @@
+<h2>List of Users Page</h2>
+
+<h3>Here is the information on All Users 
+{%for name in name%}
+<ul>
+<li>{{name.first_name}} {{name.last_name}}</h3>
+<a href="/users/{{name.id}}"><button>Edit</button></a></li>
+</ul>
+{%endfor%}
+
+
+<a href="add_user.html">Add a User</a>

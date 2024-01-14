@@ -1,23 +1,38 @@
+
 <h1>User Edit Page</h1>
-<h3>Click on User you wish to edit</h3>
 
-<ul>
-    {% for name in stuff %} 
-    <li>
-    <a href= '/{{name.id}}'> {{name.first_name}} {{name.last_name}}</a>
+
+
+    {{name.first_name}} {{name.last_name}}
+    <form action="/users" method="POST">
+        <input type='text' name = 'first_name' placeholder='first name'>
+        <input type='text' name = 'last_name' placeholder='last name'>
+        <input type='file' name= 'image_url' placeholder='image_url'>
     
-    {%endfor%}
+        <button>Edit User</button>
+    
+    </form>   
+    
+    <form action="/users/:id/delete" method="POST">
+        
+    
+        <button>Delete</button>
+    
+    </form> 
+
+    
 
 
-</ul>
+
 <ul>
-    {% for tags = tags_available%}
+    {% for tags in tags_available%}
 <li>
     {{tags.name}}
 </li>
-
+{%endfor%}
 
 
 </ul>    
 
 <a href = '/'>Go Back</a>
+

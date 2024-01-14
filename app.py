@@ -1,12 +1,12 @@
 from flask import Flask, request, render_template, redirect, flash, session
 #from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Blog
+from models import db, connect_db, User, Blog, Tag
 from sqlalchemy import create_engine
 
 
 app= Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///jeffreyng'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///template1'
 app.config['SQLACLHEMY_TRACK_MODIFICATION'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'nowayJose'
@@ -17,7 +17,35 @@ connect_db(app)
 
 
 
-@app.route('/', methods=['POST'])
+
+#home page
+@app.route('/')
+def home_page():
+    return render_template('home.html')
+
+# List of users
+@app.route("/users")
+def all_users():
+    name = User.query.all()
+    return render_template('user_list.html', name=name)
+
+@app.route("/", methods=['POST'])
+def user_signup():
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+
+    new_user = User(first_name=first_name, last_name=last_name)
+    db.session.add(new_user)
+    db.session.commit()
+    return redirect(f'/users')    
+
+# create user form
+@app.route("/users/new")
+def new_user():
+    return render_template('add_user.html')
+
+# creates/add user
+@app.route('/users/new', methods=['POST'])
 def add_user():
     first_name= request.form['first_name']
     last_name= request.form['last_name']
@@ -27,66 +55,64 @@ def add_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return redirect(f'/')
+    return redirect(f'/users')
 
-@app.route('/')
-def home_page():
-    stuff= User.query.all()
-    return render_template('home.html', stuff=stuff)
-
-
-@app.route('/<int:id>', methods=['POST'])
-def create_user(id):
+#individual users details with tag avail
+@app.route('/users/<int:id>')
+def get_indv_user(id):
     name= User.query.get_or_404(id)
+    tags_available = Tag.query.all()
+    return render_template('personal.html', name=name, tags_available=tags_available, id =id)  
+
+# delete indv users
+@app.route('/users/<int:id>/delete', methods=['POST'])
+def delete_member(id):
+    # stuff=User.query.get_or_404(id)
     User.query.filter(User.id == id).delete()
     db.session.commit()
-    tags_available = Tag.query.all()
-    return render_template('edit.html', name=name, tags_available=tags_available)  
+    # all_blogs=Blog.query.filter(Blog.user_id==id)
 
-@app.route('/<int:id>')
-def delete_member(id):
-    stuff=User.query.get_or_404(id)
-    # User.query.filter(User.id == id).delete()
-    db.session.commit()
-    all_blogs=Blog.query.filter(Blog.user_id==id)
+    return render_template('user_list.html')
 
-    return render_template('details.html', name=stuff, all_blogs=all_blogs)
+@app.route('/users/<int:id>/edit')
+def edit_user_form(id):
+    name = User.query.get_or_404(id)
+    return render_template('edit.html', name=name)
 
-
-
-@app.route('/edit', methods=['POST'])
-def delete_user():
+@app.route('/users/<int:id>/edit', methods=['POST'])
+def edit_user(id):
     all_subjects=User.query.all()
+    user= User.query.get_or_404(id)
     first_name= request.form['first_name']
     last_name= request.form['last_name']
-    image_url= request.form['image_url']
+    # image_url= request.form['image_url']
     
     
     
-    for ele in all_subjects:
-        if ele.first_name == first_name:
-            pass
-        else:
-            User.query.filter(User.first_name==first_name).delete()
+    # for ele in all_subjects:
+    #     if ele.first_name == first_name:
+    #         pass
+    #     else:
+    #         User.query.filter(User.first_name==first_name).delete()
             
             
-    for ele in all_subjects:
-        if ele.last_name == last_name:
-            pass
-        else:
-            User.query.filter(User.last_name==last_name).delete()
+    # for ele in all_subjects:
+    #     if ele.last_name == last_name:
+    #         pass
+    #     else:
+    #         User.query.filter(User.last_name==last_name).delete()
             
             
     
-    new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+    new_user = User(first_name=first_name, last_name=last_name)
     db.session.add(new_user)
     
     db.session.commit()
 
-    all_subjects=User.query.all()
+  
 
     
-    return render_template('edit.html', stuff=all_subjects)
+    return render_template('user_list.html')
 
 @app.route('/personal', methods=['GET','POST'])
 def personal():
@@ -107,6 +133,12 @@ def personal():
     name=User.query.filter(User.id==user_id)
 
     return render_template('personal.html', all_blogs=all_blogs, name=name)
+
+@app.route('users/<int:id>/posts/new')
+def new_post():
+    return render_template('post_form.html')
+
+
 
 @app.route("/tags")
 def tag_list():

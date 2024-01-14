@@ -1,11 +1,19 @@
-<h1>BLOG LIST</h>
+<h1>PERSONAL DETAILS PAGE</h1>
 
-{%for name in name%}
-<a href= '/{{name.id}}'> {{name.first_name}} {{name.last_name}}</a>
-{%endfor%}
-{%for post in all_blogs%}
+{{id}}
+    
+    <h3>First Name: {{name.first_name}} 
+    Last Name: {{name.last_name}}</h3>
 
-<h3>Posts</h3>
+    
+    
+<button><a href= "/users/{{id}}/edit" >Edit User</a></button>
+    
+    </form>  
+
+<!-- {%for post in all_blogs%} -->
+
+<!-- <h3>Posts</h3>
 <ul>
 <li><h4>Blog Title:</h4>{{post.title}}</li>
 <li><h4>Content:</h4>{{post.content}}</li>
@@ -23,4 +31,4 @@
 <input type='text' name = 'created_at' placeholder='created_at'>
 <input type='integer' name= 'user_id' placeholder='user_id'>
 <button>Submit Blog</button>
-</form>
+</form> -->

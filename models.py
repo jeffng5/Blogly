@@ -37,5 +37,19 @@ class Blog(db.Model):
     user_id= db.Column(db.Integer,
                     db.ForeignKey('users.id'))   
     
-    join=db.relationship('User', backref='blogs')
+    user=db.relationship('User', backref='blogs')
     
+    tags= db.relationship('Tag', secondary = 'blogtags', backref= 'blogs')
+    
+class Blog_Tag(db.Model):
+    __tablename__ = "blogtags"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('blogs.id'), nullable=False)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), nullable=False)
+
+class Tag(db.Model):
+    __tablename__= "tags"
+    id = db.Column(db.Integer, primary_key= True, autoincrement= True)
+    name = db.Column(db.Text, nullable = False)
+        
+        

@@ -40,7 +40,8 @@ def create_user(id):
     name= User.query.get_or_404(id)
     User.query.filter(User.id == id).delete()
     db.session.commit()
-    return render_template('edit.html', name=name)  
+    tags_available = Tag.query.all()
+    return render_template('edit.html', name=name, tags_available=tags_available)  
 
 @app.route('/<int:id>')
 def delete_member(id):
@@ -107,6 +108,36 @@ def personal():
 
     return render_template('personal.html', all_blogs=all_blogs, name=name)
 
-# @app.route('/blog')
-# def view_blog():
-#     Blog.query.
+@app.route("/tags")
+def tag_list():
+    results = Tag.query.all()
+    return render_template("tag_list.html", results=results)
+
+@app.route("/tags/:id")
+def tag_details():
+    results = Tag.query.get_or_404(id)
+    return render_template("tag.html", results = results)
+
+@app.route("/tags/:id/edit")
+def edit_tag():
+    return render_template("edit_tag_form.html")
+
+@app.route("/tags/:id/edit", methods=['POST'])
+def edit_tag_post():
+    tag_name = request.form['name']
+    # edit_tag = Tag(name=name)
+    tag = Tag.query.get_or_404(id)
+    tag.name = tag_name
+    db.session.commit()
+    return render_template("tag_list.html")
+
+
+@app.route("/tags/new")
+def new_tag():
+    return render_template("tag_form.html")
+
+@app.route("/tags/:id/delete")
+def delete_tag():
+    Tag.query.filter(Tag.id==id).delete()
+    db.session.commit()
+    return render_template("tag_list.html")
